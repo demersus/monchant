@@ -1,4 +1,4 @@
-module Monchant::Product
+module Monchant::Purchaseable
 	extend ActiveSupport::Concern
 
 	# STUBS
