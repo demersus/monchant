@@ -1,0 +1,71 @@
+class Payments::Paypal < Payment
+	field :pay_key, type: String
+	field :receiver_email, type: String
+
+	attr_accessor :return_url, :cancel_url, :ipn_url, :response
+
+	def purchase
+		unless paid? || pending?
+			if container.valid? && receiver_email && return_url && cancel_url && ipn_url
+				self.response = PaypalAdaptive::Request.new({
+					"returnUrl" => return_url,
+					"cancelUrl" => cancel_url,
+					"ipnNotificationUrl" => ipn_url,
+					"requestEnvelope" => {"errorLanguage" => "en_US"},
+					"currencyCode" => "USD",
+					"receiverList" => {"receiver" => [
+						{"email" => receiver_email, "amount" => container.total}
+					]},
+					"actionType" => "PAY"
+				})
+				if response.success?
+					self.status = "Approved, awaiting completion"
+					self.pay_key = response['payKey']
+					self.error = nil
+				else
+					self.status = response.errors.first['message']
+					self.error = true
+				end
+				self.pending = true
+				return response.success?
+			end
+		end
+	end
+	
+	def refund!
+		if pay_key?
+			self.response = PaypalAdaptive::Request.new({
+				"currencyCode" => "USD",
+				"requestEnvelope" => {"errorLanguage" => "en_US"},
+				"payKey" => pay_key,
+				"receiverList" => {"receiver" => [
+					{"email" => receiver_email, "amount" => container.total}
+				]}
+			})
+
+			if response.success?
+				self.refunded_at = Time.now
+				self.status += "; REFUNDED: #{refunded_at}"
+				self.error = nil
+			else
+				self.status += "; (#{Time.now}) PAYPAL REFUND RESPONSE: #{response.errors.first['message']}"
+				self.error = true
+			end
+			
+			return response.success?			
+		end
+	end
+
+	def mark_paid
+		self.paid_at = Time.now
+		self.error = false
+		self.pending = false
+		self.status += "; PAYMENT COMPLETED #{self.paid_at}"
+	end
+
+	def approve_payment_url(opts = {})
+		response.approve_paypal_payment_url opts
+	end
+
+
+end
