@@ -7,7 +7,8 @@ class Monchant::PaypalPayment < Monchant::Payment
 	def purchase
 		unless paid? || pending?
 			if container.valid? && receiver_email && return_url && cancel_url && ipn_url
-				self.response = PaypalAdaptive::Request.new({
+				req = PaypalAdaptive::Request.new
+				self.response = req.pay({
 					"returnUrl" => return_url,
 					"cancelUrl" => cancel_url,
 					"ipnNotificationUrl" => ipn_url,
@@ -19,12 +20,12 @@ class Monchant::PaypalPayment < Monchant::Payment
 					"actionType" => "PAY"
 				})
 				if response.success?
-					mark_paid
+					#self.pending = true
+					#self.messages << "Payment Pending (#{Time.now})"
 				else
 					self.messages << response.errors.first['message']
 					self.error = true
 				end
-				self.pending = true
 				return response.success?
 			end
 		end

@@ -29,16 +29,14 @@ class Monchant::StripePayment < Monchant::Payment
 		end
 	end
 
-	def complete_purchase
+	def do_charge
 		unless paid?
-			if container.valid?
-				self.charge = Stripe::Charge.create({
-					amount: container.total_in_cents,
-					currency: 'usd',
-					card: token
-				}, access_token)
-			  return paid?
-			end
+			self.charge = Stripe::Charge.create({
+				amount: container.total_in_cents,
+				currency: 'usd',
+				card: token
+			}, access_token)
+		  return paid?
 		end
 	end
 end

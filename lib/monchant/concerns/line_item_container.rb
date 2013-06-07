@@ -4,12 +4,12 @@ module Monchant::LineItemContainer
 	included do
 		embeds_many :items, class_name: 'Monchant::LineItem', as: :container
 		accepts_nested_attributes_for :items, allow_destroy: true
-		before_save :delete_zero_quantity_line_items, unless: :completed_at?
-		before_save :combine_line_items, unless: :completed_at?
+		before_save :delete_zero_quantity_line_items#, unless: :completed_at?
+		before_save :combine_line_items#, unless: :completed_at?
 	end
 	
 	def total
-		items.collect(&:total).sum
+		items.sum(&:total)
 	end
 	
 	def combine_line_items

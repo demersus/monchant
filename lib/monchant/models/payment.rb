@@ -21,7 +21,13 @@ class Monchant::Payment
 		self.paid_at = Time.now
 		self.pending = nil
 		self.error = nil
-		self.messages << "PAYMENT COMPLETED #{self.paid_at}"
+		self.messages << "PAYMENT COMPLETED (#{self.paid_at})"
+	end
+
+	def mark_pending
+		self.pending = true
+		self.error = nil
+		self.messages << "PAYMENT PENDING (#{Time.now})"
 	end
 
 	def refunded?
@@ -32,7 +38,7 @@ class Monchant::Payment
 		self.refunded_at = Time.now
 		self.pending_refund = nil
 		self.error = nil
-		self.messages <<  "REFUND COMPLETED #{self.refunded_at}"
+		self.messages <<  "REFUND COMPLETED (#{self.refunded_at})"
 	end
 
 end

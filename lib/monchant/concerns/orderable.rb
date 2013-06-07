@@ -8,7 +8,7 @@ module Monchant::Orderable
 		field :total_in_cents, type: Integer
 		field :ip_address, type: String
 
-		embeds_one :payment, class_name: 'Monchant::Payment',as: :container
+		embeds_one :payment, as: :container, inverse_of: :container
 		accepts_nested_attributes_for :payment
 		
 		scope :paid, -> {
@@ -30,7 +30,7 @@ module Monchant::Orderable
 	end
 	
 	def calculated_total
-		items.collect(&:total).sum
+		items.sum(&:total)
 	end
 
 	def total
@@ -44,7 +44,7 @@ module Monchant::Orderable
 
 
 	def total_in_cents
-		read_attribute(total_in_cents) || (calculated_total * 100).to_i
+		read_attribute(:total_in_cents) || (calculated_total * 100).to_i
 	end
 
 	def complete
