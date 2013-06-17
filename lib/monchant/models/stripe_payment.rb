@@ -19,7 +19,7 @@ class Monchant::StripePayment < Monchant::Payment
 	def charge
 		return nil unless charge_id?
 		@response ||=
-			Stripe::Charge.retrieve(charge_id)
+			Stripe::Charge.retrieve(charge_id,access_token)
 	end
 
 	def refund

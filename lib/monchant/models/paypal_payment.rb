@@ -19,10 +19,7 @@ class Monchant::PaypalPayment < Monchant::Payment
 					]},
 					"actionType" => "PAY"
 				})
-				if response.success?
-					#self.pending = true
-					#self.messages << "Payment Pending (#{Time.now})"
-				else
+				unless response.success?
 					self.messages << response.errors.first['message']
 					self.error = true
 				end
