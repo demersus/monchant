@@ -4,7 +4,7 @@
 # Please use Monchant::Purchaseable
 
 class Monchant::LineItem
-	include Mongoid::Document
+	include ::Mongoid::Document
 	embedded_in :container, polymorphic: true
 
 	field :price_in_cents, type: Integer, :default => 0

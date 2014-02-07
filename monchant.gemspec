@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Monchant::VERSION
   spec.authors       = ["Nik Petersen"]
   spec.email         = ["nik@petersendata.net"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{A framework for building purchase/order/line-items models}
+  spec.summary       = %q{A framework for building purchase/order/line-items models}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-	spec.add_dependency "mongoid"
+	spec.add_dependency "mongoid", '~> 3'
 	spec.add_dependency "activesupport"
 	spec.add_dependency "stripe"
 	spec.add_dependency "paypal_adaptive"

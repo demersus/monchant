@@ -1,5 +1,6 @@
 require "paypal_adaptive"
 require "stripe"
+require 'mongoid'
 require "monchant/version"
 require "monchant/models/line_item"
 require "monchant/concerns/line_item_container"
